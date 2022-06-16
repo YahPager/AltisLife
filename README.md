@@ -9,10 +9,10 @@ I don't have any issue with people using this code on an Arma 3 Mod as long as
 Myself (Pager) and Paronity get credit for it.
 
 /*
-███████████File: fn_copLights.sqf███████████
-████Author: [GSN] Pager & [GSN] Paronity████
-██████████Date Created: 02.24.2015██████████
-███████Date Modified: 06.16.2022 v4.0███████
+███████████File: fn_copLights.sqf███████████\n
+████Author: [GSN] Pager & [GSN] Paronity████\n
+██████████Date Created: 02.24.2015██████████\n
+███████Date Modified: 06.16.2022 v4.0███████\n
 */
 
 At the beginning when I made this code I had Paronity look over the code and 
