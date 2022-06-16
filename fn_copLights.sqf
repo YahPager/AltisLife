@@ -5,33 +5,35 @@
 ███████Date Modified: 06.16.2022 v4.0███████
 */
 
-private ["_Vehicle","_Type","_Sun","_Attenuation","_Intensity","_IsLight","_Color","_Position","_Light"];
+private ["_type","_sun","_attenuation","_intensity","_isLight","_color","_position","_light"];
 
-_Vehicle = _this select 0;
-_Type = typeOf _Vehicle;
-_Sun = (sunOrMoon < 1);
+if (!hasInterface) exitWith {}; // Doesn't have interface, no lights.
 
-if (isNil "_Vehicle" || {isNull _Vehicle || {!(_Vehicle getVariable "lights")}}) exitWith {};
+private _vehicle = param[0, objNull, [objNull]];
+_type = typeOf _Vehicle;
+_sun = (sunOrMoon < 1);
 
-_Vehicle setVariable ["lights", true, false];
+if (isNil "_vehicle" || {isNull _vehicle || {!(_vehicle getVariable "lights")}}) exitWith {};
 
-while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",false]} do
+_vehicle setVariable ["lights", true, false];
+
+while {!isNil "_vehicle" && !isNull _vehicle && _vehicle getVariable ["lights",false]} do
 {
 	_colorRed = [255, 0.1, 0.1];
 	_colorWhite = [255, 255, 255];
 	_colorBlue = [0.1, 0.1, 255];
 
-	if (_Sun) then
+	if (_sun) then
 	{// Night
 		_lightLow = 0;
 		_lightHigh = 20;
-		_Attenuation = [0.001, 3000, 50, 500000, 0.001, 250];
-		_Intensity = 100;
+		_attenuation = [0.001, 3000, 50, 500000, 0.001, 250];
+		_intensity = 100;
 	} else {// Day
 		_lightLow = 0;
 		_lightHigh = 100;
-		_Att = [0.001, 0, 50, 2500000, 0.001, 250];
-		_Intensity = 1000;
+		_attenuation = [0.001, 0, 50, 2500000, 0.001, 250];
+		_intensity = 1000;
 	};
 
 	_flashes = 3;
@@ -44,36 +46,36 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 	_attach =
 	{
 		_IsLight = _this select 0;
-		_Color = _this select 1;
-		_Position = _this select 2;
-		_Light = "#lightpoint" createVehicleLocal getPos _Vehicle;
+		_color = _this select 1;
+		_position = _this select 2;
+		_light = "#lightpoint" createVehicleLocal getPos _vehicle;
 		_light setLightAmbient [0,0,0];
-		_Light setLightBrightness 0;
-		_Light setLightAttenuation _Attenuation;
-		_Light setLightIntensity _Intensity;
-		_Light setLightFlareSize 1;
-		_Light setLightFlareMaxDistance 150;
-		_Light setLightUseFlare true;
-		_Light setLightUseLight true;
+		_light setLightBrightness 0;
+		_light setLightAttenuation _attenuation;
+		_light setLightIntensity _intensity;
+		_light setLightFlareSize 1;
+		_light setLightFlareMaxDistance 150;
+		_light setLightUseFlare true;
+		_light setLightUseLight true;
 
-		switch (_Color) do
+		switch (_color) do
 		{
 			case "RED": { _light setLightColor _colorRed; };
 			case "WHITE": { _light setLightColor _colorWhite; };
 			case "BLUE": { _light setLightColor _colorBlue; };
 		};
 
-		if (_IsLight) then
+		if (_isLight) then
 		{
-			_lightLeft pushBack [_Light, _Position];
+			_lightLeft pushBack [_light, _position];
 		} else {
-			_lightRight pushBack [_Light, _Position];
+			_lightRight pushBack [_light, _position];
 		};
 
-		_Light lightAttachObject [_Vehicle, _Position];
+		_light lightAttachObject [_vehicle, _position];
 	};
 
-	switch (_Type) do
+	switch (_type) do
 	{
 		case "C_Offroad_01_F": // Offroad
 		{
@@ -163,7 +165,7 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
     
 	};
 
-	while {(alive _Vehicle && _Vehicle getVariable ["lights",false])} do
+	while {(alive _vehicle && _vehicle getVariable ["lights",false])} do
 	{
 		for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
 		{
@@ -193,4 +195,4 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 	_lightRight = [];
 };
 
-_Vehicle setVariable ["lights", false, true];
+_vehicle setVariable ["lights", false, true];
