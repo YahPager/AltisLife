@@ -5,17 +5,17 @@
 ███████Date Modified: 06.16.2022 v4.0███████
 */
 
-private ["_Veh","_Type","_Sun","_Attenuation","_Intensity","_IsLight","_Color","_Pos","_Light"];
+private ["_Vehicle","_Type","_Sun","_Attenuation","_Intensity","_IsLight","_Color","_Pos","_Light"];
 
-_Veh = _this select 0;
+_Vehicle = _this select 0;
 _Type = typeOf _Veh;
 _Sun = (sunOrMoon < 1);
 
-if (isNil "_Veh" || {isNull _Veh || {!(_Veh getVariable "lights")}}) exitWith {};
+if (isNil "_Vehicle" || {isNull _Vehicle || {!(_Vehicle getVariable "lights")}}) exitWith {};
 
-_Veh setVariable ["lights", true, false];
+_Vehicle setVariable ["lights", true, false];
 
-while {!isNil "_Veh" && !isNull _Veh && _Veh getVariable ["lights",false]} do
+while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",false]} do
 {
 	_colorRed = [255, 0.1, 0.1];
 	_colorWhite = [255, 255, 255];
@@ -70,7 +70,7 @@ while {!isNil "_Veh" && !isNull _Veh && _Veh getVariable ["lights",false]} do
 			_lightRight pushBack [_Light, _Pos];
 		};
 
-		_Light lightAttachObject [_Veh, _Pos];
+		_Light lightAttachObject [_Vehicle, _Pos];
 	};
 
 	switch (_Type) do
@@ -163,7 +163,7 @@ while {!isNil "_Veh" && !isNull _Veh && _Veh getVariable ["lights",false]} do
     
 	};
 
-	while {(alive _Veh && _Veh getVariable ["lights",false])} do
+	while {(alive _Vehicle && _Vehicle getVariable ["lights",false])} do
 	{
 		for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
 		{
@@ -193,4 +193,4 @@ while {!isNil "_Veh" && !isNull _Veh && _Veh getVariable ["lights",false]} do
 	_lightRight = [];
 };
 
-_Veh setVariable ["lights", false, true];
+_Vehicle setVariable ["lights", false, true];
