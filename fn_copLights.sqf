@@ -5,13 +5,13 @@
 ███████Date Modified: 06.16.2022 v4.0███████
 */
 
-private ["_type","_sun","_attenuation","_intensity","_isLight","_color","_position","_light"];
+private ["_attenuation","_intensity","_isLight","_color","_position","_light"];
 
 if (!hasInterface) exitWith {}; // Doesn't have interface, no lights.
 
 private _vehicle = param[0, objNull, [objNull]];
-_type = typeOf _vehicle;
-_sun = (sunOrMoon < 1);
+private _type = typeOf _vehicle;
+private _sun = (sunOrMoon < 1);
 
 if (isNil "_vehicle" || {isNull _vehicle || {!(_vehicle getVariable "lights")}}) exitWith {};
 
