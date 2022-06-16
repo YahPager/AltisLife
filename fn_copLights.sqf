@@ -16,12 +16,12 @@ private _whiteLights = [255, 255, 255];
 private _blueLights = [0.1, 0.1, 255];
 
 if (sunOrMoon isEqualTo 1) then
-{// Night
+{ // Night
 	private _brightnessLow = 0;
 	private _brightnessHigh = 20;
 	private _attenuation = [0.001, 3000, 50, 500000, 0.001, 250];
 	private _intensity = 100;
-} else {// Day
+} else { // Day
 	private _brightnessLow = 0;
 	private _brightnessHigh = 100;
 	private _attenuation = [0.001, 0, 50, 2500000, 0.001, 250];
@@ -49,12 +49,11 @@ private _attach =
 	_lights setLightFlareSize 1;
 	_lights setLightFlareMaxDistance 150;
 	_lights setLightUseFlare true;
-	_lights setLightUseLight true;
 
 	switch (_color) do
 	{
 		case "RED": { _lights setLightColor _redLights; };
-		case "WHITE": { _lights setLightColor _whiteLights; }; // Always headlights except on Pub Cops & Pub Medics
+		case "WHITE": { _lights setLightColor _whiteLights; }; // Always headlights except on Pub Cops & Pub Medics White isn't used.
 		case "BLUE": { _lights setLightColor _blueLights; };
 	};
 
