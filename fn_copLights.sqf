@@ -5,7 +5,7 @@
 ███████Date Modified: 06.16.2022 v4.0███████
 */
 
-private ["_vehicle","_type","_sun","","","","","","","",""];
+private ["_vehicle","_type","_sun","_redLights","_whiteLights","_blueLights","_brightnessLow","_brightnessHigh","_attenuation","_intensity","_flashes","_flashOn","_flashOff","_leftLights","_rightLights","_attach","_isLight","_color","_position","_lights","_lightsOn"];
 
 if (!hasInterface) exitWith {}; // Doesn't have interface, no lights.
 
@@ -41,7 +41,7 @@ _rightLights = [];
 
 _attach =
 {
-	_IsLight = _this select 0;
+	_isLight = _this select 0;
 	_color = _this select 1;
 	_position = _this select 2;
 	_lights = "#lightpoint" createVehicleLocal (getPos _vehicle);
@@ -164,27 +164,27 @@ switch (_type) do
 _lightsOn = true;
 while {(alive _vehicle)} do
 {
-    if (!(_vehicle getVariable "lights")) exitWith {};
-    if (_lightsOn) then
-    {
-        for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
-        {
-            { (_x select 0) setLightBrightness _brightnessHigh; } forEach _leftLights;
-            uiSleep _flashOn;
-            { (_x select 0) setLightBrightness _brightnessLow; } forEach _leftLights;
-            uiSleep _flashOff;
-        };
-        { (_x select 0) setLightBrightness 0; } forEach _leftLights;
+	if (!(_vehicle getVariable "lights")) exitWith {};
+	if (_lightsOn) then
+	{
+		for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
+		{
+			{ (_x select 0) setLightBrightness _brightnessHigh; } forEach _leftLights;
+			uiSleep _flashOn;
+			{ (_x select 0) setLightBrightness _brightnessLow; } forEach _leftLights;
+			uiSleep _flashOff;
+		};
+		{ (_x select 0) setLightBrightness 0; } forEach _leftLights;
 
-        for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
-        {
-            { (_x select 0) setLightBrightness _brightnessHigh; } forEach _rightLights;
-            uiSleep _flashOn;
-            { (_x select 0) setLightBrightness _brightnessLow; } forEach _rightLights;
-            uiSleep _flashOff;
-        };
-        { (_x select 0) setLightBrightness 0; } forEach _rightLights;
-    };
+		for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
+		{
+			{ (_x select 0) setLightBrightness _brightnessHigh; } forEach _rightLights;
+			uiSleep _flashOn;
+			{ (_x select 0) setLightBrightness _brightnessLow; } forEach _rightLights;
+			uiSleep _flashOff;
+		};
+		{ (_x select 0) setLightBrightness 0; } forEach _rightLights;
+	};
 };
 
 { deleteVehicle (_x select 0) } foreach _leftLights;
