@@ -5,7 +5,7 @@
 ███████Date Modified: 06.16.2022 v4.0███████
 */
 
-private ["_Veh","_CR","_CW","_CB","_BH","_BL","_FLS","_FON","_OFF","_LL","_LR","_Type","_Sun","_Att","_Inty","_Attach","_IsLight","_Color","_Pos","_Light"];
+private ["_Veh","_Type","_Sun","_Attenuation","_Intensity","_IsLight","_Color","_Pos","_Light"];
 
 _Veh = _this select 0;
 _Type = typeOf _Veh;
@@ -17,32 +17,31 @@ _Veh setVariable ["lights", true, false];
 
 while {!isNil "_Veh" && !isNull _Veh && _Veh getVariable ["lights",false]} do
 {
-	// Light Color
-	_CR = [255, 0.1, 0.1];
-	_CW = [255, 255, 255];
-	_CB = [0.1, 0.1, 255];
+	_colorRed = [255, 0.1, 0.1];
+	_colorWhite = [255, 255, 255];
+	_colorBlue = [0.1, 0.1, 255];
 
 	if (_Sun) then
 	{// Night
-		_BL = 0;
-		_BH = 20;
-		_Att = [0.001, 3000, 50, 500000, 0.001, 250];
-		_Inty = 100;
+		_lightLow = 0;
+		_lightHigh = 20;
+		_Attenuation = [0.001, 3000, 50, 500000, 0.001, 250];
+		_Intensity = 100;
 	} else {// Day
-		_BL = 0;
-		_BH = 100;
+		_lightLow = 0;
+		_lightHigh = 100;
 		_Att = [0.001, 0, 50, 2500000, 0.001, 250];
-		_Inty = 1000;
+		_Intensity = 1000;
 	};
 
-	_FLS = 3;
-	_FON = 0.05;
-	_OFF = 0.075;
+	_flashes = 3;
+	_lightOn = 0.05;
+	_lightOff = 0.075;
 
-	_LL = [];
-	_RL = [];
+	_lightLeft = [];
+	_lightRight = [];
 
-	_Attach =
+	_attach =
 	{
 		_IsLight = _this select 0;
 		_Color = _this select 1;
@@ -50,8 +49,8 @@ while {!isNil "_Veh" && !isNull _Veh && _Veh getVariable ["lights",false]} do
 		_Light = "#lightpoint" createVehicleLocal getPos _veh;
 		_light setLightAmbient [0,0,0];
 		_Light setLightBrightness 0;
-		_Light setLightAttenuation _Att;
-		_Light setLightIntensity _Inty;
+		_Light setLightAttenuation _Attenuation;
+		_Light setLightIntensity _Intensity;
 		_Light setLightFlareSize 1;
 		_Light setLightFlareMaxDistance 150;
 		_Light setLightUseFlare true;
@@ -59,16 +58,16 @@ while {!isNil "_Veh" && !isNull _Veh && _Veh getVariable ["lights",false]} do
 
 		switch (_Color) do
 		{
-			case "RED": { _light setLightColor _CR; };
-			case "WHITE": { _light setLightColor _CW; };
-			case "BLUE": { _light setLightColor _CB; };
+			case "RED": { _light setLightColor _colorRed; };
+			case "WHITE": { _light setLightColor _colorWhite; };
+			case "BLUE": { _light setLightColor _colorBlue; };
 		};
 
 		if (_IsLight) then
 		{
-			_LL pushBack [_Light, _Pos];
+			_lightLeft pushBack [_Light, _Pos];
 		} else {
-			_LR pushBack [_Light, _Pos];
+			_lightRight pushBack [_Light, _Pos];
 		};
 
 		_Light lightAttachObject [_Veh, _Pos];
@@ -166,32 +165,32 @@ while {!isNil "_Veh" && !isNull _Veh && _Veh getVariable ["lights",false]} do
 
 	while {(alive _Veh && _Veh getVariable ["lights",false])} do
 	{
-		for [{_i=0}, {_i<_FLS}, {_i=_i+1}] do
+		for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
 		{
-			{ (_x select 0) setLightBrightness _BH; } forEach _LL;
-			sleep _FON;
-			{ (_x select 0) setLightBrightness _BL; } forEach _LL;
-			sleep _OFF;
+			{ (_x select 0) setLightBrightness _lightHigh; } forEach _lightLeft;
+			sleep _lightOn;
+			{ (_x select 0) setLightBrightness _lightLow; } forEach _lightLeft;
+			sleep _lightOff;
 		};
 
-		{ (_x select 0) setLightBrightness 0; } forEach _LL;
+		{ (_x select 0) setLightBrightness 0; } forEach _lightLeft;
 
-		for [{_i=0}, {_i<_FLS}, {_i=_i+1}] do
+		for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
 		{
-			{ (_x select 0) setLightBrightness _BH; } forEach _LR;
-			sleep _FON;
-			{ (_x select 0) setLightBrightness _BL; } forEach _LR;
-			sleep _OFF;
+			{ (_x select 0) setLightBrightness _lightHigh; } forEach _lightRight;
+			sleep _lightOn;
+			{ (_x select 0) setLightBrightness _lightLow; } forEach _lightRight;
+			sleep _lightOff;
 		};
 
-		{ (_x select 0) setLightBrightness 0; } forEach _LR;
+		{ (_x select 0) setLightBrightness 0; } forEach _lightRight;
 	};
 
-	{ deleteVehicle (_x select 0) } foreach _LL;
-	{ deleteVehicle (_x select 0) } foreach _LR;
+	{ deleteVehicle (_x select 0) } foreach _lightLeft;
+	{ deleteVehicle (_x select 0) } foreach _lightRight;
 
-	_LL = [];
-	_LR = [];
+	_lightLeft = [];
+	_lightRight = [];
 };
 
 _Veh setVariable ["lights", false, true];
