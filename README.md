@@ -17,4 +17,4 @@ Myself (Pager) and Paronity get credit for it.
 
 At the beginning when I made this code I had Paronity look over the code and 
 give me pointers as to how to make it work better At the time I just started
-doing code and Paronity was our Head Coder for our Arma Mods for GSN PC Gaming...
+doing code and Paronity was our Head Coder for our Arma Mods for GSN PC Gaming.
