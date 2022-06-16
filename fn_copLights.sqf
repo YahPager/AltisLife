@@ -10,7 +10,7 @@ private ["_type","_sun","_attenuation","_intensity","_isLight","_color","_positi
 if (!hasInterface) exitWith {}; // Doesn't have interface, no lights.
 
 private _vehicle = param[0, objNull, [objNull]];
-_type = typeOf _Vehicle;
+_type = typeOf _vehicle;
 _sun = (sunOrMoon < 1);
 
 if (isNil "_vehicle" || {isNull _vehicle || {!(_vehicle getVariable "lights")}}) exitWith {};
