@@ -1,7 +1,7 @@
 /*
-██████████File: fn_copLights.sqf████████████
+███████████File: fn_copLights.sqf███████████
 ████Author: [GSN] Pager & [GSN] Paronity████
-█████████Date Created: 02.24.2015███████████
+██████████Date Created: 02.24.2015██████████
 ███████Date Modified: 06.16.2022 v4.0███████
 */
 
