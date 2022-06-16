@@ -5,7 +5,7 @@
 ███████Date Modified: 06.16.2022 v4.0███████
 */
 
-private ["_vehicle","_lightRed","_lightWhite","_lightBlue","_brightnessHigh","_brightnessLow","_attach","_leftLights","_rightLights","_type","_attenuation"];
+private ["_vehicle","_type","_sun","","","","","","","",""];
 
 if (!hasInterface) exitWith {}; // Doesn't have interface, no lights.
 
@@ -15,19 +15,19 @@ _sun = (sunOrMoon < 1);
 
 if (isNil "_vehicle" || {isNull _vehicle || {!(_vehicle getVariable "lights")}}) exitWith {};
 
-_lightRed = [255, 0.1, 0.1];
-_lightWhite = [255, 255, 255];
-_lightBlue = [0.1, 0.1, 255];
+_redLights = [255, 0.1, 0.1];
+_whiteLights = [255, 255, 255];
+_blueLights = [0.1, 0.1, 255];
 
 if (_sun) then
 {// Night
-	_lightLow = 0;
-	_lightHigh = 20;
+	_brightnessLow = 0;
+	_brightnessHigh = 20;
 	_attenuation = [0.001, 3000, 50, 500000, 0.001, 250];
 	_intensity = 100;
 } else {// Day
-	_lightLow = 0;
-	_lightHigh = 100;
+	_brightnessLow = 0;
+	_brightnessHigh = 100;
 	_attenuation = [0.001, 0, 50, 2500000, 0.001, 250];
 	_intensity = 1000;
 };
@@ -36,40 +36,40 @@ _flashes = 3;
 _flashOn = 0.05;
 _flashOff = 0.075;
 
-_lightLeft = [];
-_lightRight = [];
+_leftLights = [];
+_rightLights = [];
 
 _attach =
 {
 	_IsLight = _this select 0;
 	_color = _this select 1;
 	_position = _this select 2;
-	_light = "#lightpoint" createVehicleLocal (getPos _vehicle);
+	_lights = "#lightpoint" createVehicleLocal (getPos _vehicle);
 	uisleep 0.2;
-	_light setLightAmbient [0,0,0];
-	_light setLightBrightness 0;
-	_light setLightAttenuation _attenuation;
-	_light setLightIntensity _intensity;
-	_light setLightFlareSize 1;
-	_light setLightFlareMaxDistance 150;
-	_light setLightUseFlare true;
-	_light setLightUseLight true;
+	_lights setLightAmbient [0,0,0];
+	_lights setLightBrightness 0;
+	_lights setLightAttenuation _attenuation;
+	_lights setLightIntensity _intensity;
+	_lights setLightFlareSize 1;
+	_lights setLightFlareMaxDistance 150;
+	_lights setLightUseFlare true;
+	_lights setLightUseLight true;
 
 	switch (_color) do
 	{
-		case "RED": { _light setLightColor _lightRed; };
-		case "WHITE": { _light setLightColor _lightWhite; };
-		case "BLUE": { _light setLightColor _lightBlue; };
+		case "RED": { _lights setLightColor _redLights; };
+		case "WHITE": { _lights setLightColor _whiteLights; };
+		case "BLUE": { _lights setLightColor _blueLights; };
 	};
 
 	if (_isLight) then
 	{
-		_lightLeft pushBack [_light, _position];
+		_leftLights pushBack [_lights, _position];
 	} else {
-		_lightRight pushBack [_light, _position];
+		_rightLights pushBack [_lights, _position];
 	};
 
-	_light lightAttachObject [_vehicle, _position];
+	_lights lightAttachObject [_vehicle, _position];
 };
 
 switch (_type) do
