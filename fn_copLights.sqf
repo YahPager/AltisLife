@@ -5,46 +5,42 @@
 ███████Date Modified: 06.16.2022 v4.0███████
 */
 
-private ["_vehicle","_type","_sun","_redLights","_whiteLights","_blueLights","_brightnessLow","_brightnessHigh","_attenuation","_intensity","_flashes","_flashOn","_flashOff","_leftLights","_rightLights","_attach","_isLight","_color","_position","_lights","_lightsOn"];
-
 if (!hasInterface) exitWith {}; // Doesn't have interface, no lights.
 
-if !(params [["_vehicle", objNull, [objNull]]]) exitWith {}; // Why no parameter?
-_type = typeOf _vehicle;
-_sun = (sunOrMoon < 1);
-
+private _vehicle = param[0, objNull, [objNull]];
 if (isNil "_vehicle" || {isNull _vehicle || {!(_vehicle getVariable "lights")}}) exitWith {};
+uisleep 1; // Sleep a second to allow syncing, if remoteexec was faster than the variable.
 
-_redLights = [255, 0.1, 0.1];
-_whiteLights = [255, 255, 255];
-_blueLights = [0.1, 0.1, 255];
+private _redLights = [255, 0.1, 0.1];
+private _whiteLights = [255, 255, 255];
+private _blueLights = [0.1, 0.1, 255];
 
-if (_sun) then
+if (sunOrMoon isEqualTo 1) then
 {// Night
-	_brightnessLow = 0;
-	_brightnessHigh = 20;
-	_attenuation = [0.001, 3000, 50, 500000, 0.001, 250];
-	_intensity = 100;
+	private _brightnessLow = 0;
+	private _brightnessHigh = 20;
+	private _attenuation = [0.001, 3000, 50, 500000, 0.001, 250];
+	private _intensity = 100;
 } else {// Day
-	_brightnessLow = 0;
-	_brightnessHigh = 100;
-	_attenuation = [0.001, 0, 50, 2500000, 0.001, 250];
-	_intensity = 1000;
+	private _brightnessLow = 0;
+	private _brightnessHigh = 100;
+	private _attenuation = [0.001, 0, 50, 2500000, 0.001, 250];
+	private _intensity = 1000;
 };
 
-_flashes = 3;
-_flashOn = 0.05;
-_flashOff = 0.075;
+private _flashes = 3;
+private _flashOn = 0.05;
+private _flashOff = 0.075;
 
-_leftLights = [];
-_rightLights = [];
+private _leftLights = [];
+private _rightLights = [];
 
-_attach =
+private _attach =
 {
-	_isLight = _this select 0;
-	_color = _this select 1;
-	_position = _this select 2;
-	_lights = "#lightpoint" createVehicleLocal (getPos _vehicle);
+	private _isLight = _this select 0;
+	private _color = _this select 1;
+	private _position = _this select 2;
+	private _lights = "#lightpoint" createVehicleLocal getPos _vehicle;
 	uisleep 0.2;
 	_lights setLightAmbient [0,0,0];
 	_lights setLightBrightness 0;
@@ -58,7 +54,7 @@ _attach =
 	switch (_color) do
 	{
 		case "RED": { _lights setLightColor _redLights; };
-		case "WHITE": { _lights setLightColor _whiteLights; };
+		case "WHITE": { _lights setLightColor _whiteLights; }; // Always headlights except on Pub Cops & Pub Medics
 		case "BLUE": { _lights setLightColor _blueLights; };
 	};
 
@@ -72,7 +68,7 @@ _attach =
 	_lights lightAttachObject [_vehicle, _position];
 };
 
-switch (_type) do
+switch (typeOf _vehicle) do
 {
 	case "C_Offroad_01_F": // Offroad
 	{
@@ -161,7 +157,7 @@ switch (_type) do
 	};   
 };
 
-_lightsOn = true;
+private _lightsOn = true;
 while {(alive _vehicle)} do
 {
 	if (!(_vehicle getVariable "lights")) exitWith {};
@@ -190,6 +186,6 @@ while {(alive _vehicle)} do
 { deleteVehicle (_x select 0) } foreach _leftLights;
 { deleteVehicle (_x select 0) } foreach _rightLights;
 
-_leftLights = [];
-_rightLights = [];
+private _leftLights = [];
+private _rightLights = [];
  
