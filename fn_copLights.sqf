@@ -5,10 +5,10 @@
 ███████Date Modified: 06.16.2022 v4.0███████
 */
 
-private ["_Vehicle","_Type","_Sun","_Attenuation","_Intensity","_IsLight","_Color","_Pos","_Light"];
+private ["_Vehicle","_Type","_Sun","_Attenuation","_Intensity","_IsLight","_Color","_Position","_Light"];
 
 _Vehicle = _this select 0;
-_Type = typeOf _Veh;
+_Type = typeOf _Vehicle;
 _Sun = (sunOrMoon < 1);
 
 if (isNil "_Vehicle" || {isNull _Vehicle || {!(_Vehicle getVariable "lights")}}) exitWith {};
@@ -45,8 +45,8 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 	{
 		_IsLight = _this select 0;
 		_Color = _this select 1;
-		_Pos = _this select 2;
-		_Light = "#lightpoint" createVehicleLocal getPos _veh;
+		_Position = _this select 2;
+		_Light = "#lightpoint" createVehicleLocal getPos _Vehicle;
 		_light setLightAmbient [0,0,0];
 		_Light setLightBrightness 0;
 		_Light setLightAttenuation _Attenuation;
@@ -65,17 +65,17 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 
 		if (_IsLight) then
 		{
-			_lightLeft pushBack [_Light, _Pos];
+			_lightLeft pushBack [_Light, _Position];
 		} else {
-			_lightRight pushBack [_Light, _Pos];
+			_lightRight pushBack [_Light, _Position];
 		};
 
-		_Light lightAttachObject [_Vehicle, _Pos];
+		_Light lightAttachObject [_Vehicle, _Position];
 	};
 
 	switch (_Type) do
 	{
-		case OFFROAD:
+		case "C_Offroad_01_F": // Offroad
 		{
 			[false, "RED", [-0.44, 0, 0.525]] call _attach;
 			[true, "BLUE", [0.345, 0, 0.525]] call _attach;
@@ -87,7 +87,7 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 			[true, "WHITE", [-0.695, 2.2825, -0.355]] call _attach;
 		};
 
-		case BG_OFFROAD:
+		case "B_G_Offroad_01_F": // BG_Offroad
 		{
 			[false, "RED", [0.575, -2.95, -0.77]] call _attach;
 			[true, "BLUE", [-0.645, -2.95, -0.77]] call _attach;
@@ -97,7 +97,7 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 			[false, "RED", [-0.695, 2.2825, -0.355]] call _attach;
 		};
 
-		case SUV:
+		case "C_SUV_01_F": // SUV
 		{
 			[true, "RED", [-0.39, 2.28, -0.52]] call _attach;
 			[false, "BLUE", [0.38, 2.28, -0.52]] call _attach;
@@ -109,7 +109,7 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 			[false, "WHITE", [-0.8, 1.95, -0.48]] call _attach;
 		};
 
-		case HATCH:
+		case "C_Hatchback_01_F": // Hatch
 		{
 			[false, "BLUE", [-0.03, 0, 0.2]] call _attach;
 			[true, "BLUE", [-0.03, 0, 0.2]] call _attach;
@@ -119,7 +119,7 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 			[true, "WHITE", [-0.8, 1.615, -0.525]] call _attach;
 		};
 
-		case SPORT:
+		case "C_Hatchback_01_sport_F": // Sport
 		{
 			[false, "RED", [-0.03, 0, 0.2]] call _attach;
 			[true, "BLUE", [-0.03, 0, 0.2]] call _attach;
@@ -129,7 +129,7 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 			[true, "WHITE", [-0.8, 1.615, -0.525]] call _attach;
 		};
 
-		case HUNTER:
+		case "B_MRAP_01_F": // Hunter
 		{
 			[false, "RED", [-0.85, -0.9, 0.6]] call _attach;
 			[true, "BLUE", [0.85, -0.9, 0.6]] call _attach;
@@ -139,7 +139,7 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 			[false, "WHITE", [0.85, 1.475, -0.75]] call _attach;
 		};
 
-		case IFRIT:
+		case "O_MRAP_02_F": // Ifrit
 		{
 			[false, "BLUE", [1.175, -1.5, 0.365]] call _attach;
 			[true, "RED", [-1.175, -1.5, 0.365]] call _attach;
@@ -155,7 +155,7 @@ while {!isNil "_Vehicle" && !isNull _Vehicle && _Vehicle getVariable ["lights",f
 			[false, "BLUE", [0.4, -4.95, 0.155]] call _attach;
 		};
 
-		case JEEP:
+		case "C_Offroad_02_unarmed_F": // Jeep
 		{
 			[false, "RED", [0.5, 1.25, -0.16]] call _attach;
 			[true, "BLUE", [-0.5, 1.25, -0.16]] call _attach;
