@@ -18,3 +18,5 @@ tweak it for your needs.
 
 As far as this working I no longer have Arma 3 on my PC so I have no way to test it,
 I haven't tweaked it that much, so it should, but I don't guarantee it to work...
+
+Pager
