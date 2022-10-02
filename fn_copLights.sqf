@@ -185,6 +185,6 @@ while {(alive _vehicle)} do
 { deleteVehicle (_x select 0) } foreach _leftLights;
 { deleteVehicle (_x select 0) } foreach _rightLights;
 
-private _leftLights = [];
-private _rightLights = [];
+_leftLights = [];
+_rightLights = [];
  
