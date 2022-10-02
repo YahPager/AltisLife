@@ -2,7 +2,7 @@
 ███████████File: fn_copLights.sqf███████████
 ████Author: [GSN] Pager & [GSN] Paronity████
 ██████████Date Created: 02.24.2015██████████
-███████Date Modified: 06.16.2022 v4.0███████
+███████Date Modified: 10.02.2022 v4.0███████
 */
 
 if (!hasInterface) exitWith {}; // Doesn't have interface, no lights.
