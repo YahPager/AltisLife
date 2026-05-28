@@ -3,7 +3,7 @@
 █████████File: fn_vehicleSiren.sqf██████████
 ███████████████Author: Pager████████████████
 ██████████Date Created: 05.28.2026██████████
-███████Date Modified: 05.28.2026 v1.0███████
+███████Date Modified: 05.28.2026 v1.1███████
 */
 
 _this params [
@@ -15,7 +15,6 @@ _this params [
 if (isNull _vehicle) exitWith {};
 
 // Clean up any existing siren safely
-
 private _oldSiren = _vehicle getVariable ["siren", objNull];
 if (!isNull _oldSiren) then {
 	deleteVehicle _oldSiren;
@@ -25,7 +24,6 @@ if (!isNull _oldSiren) then {
 _vehicle setVariable ["siren", objNull, true];
 
 // Turn OFF logic
-
 if (!_on) exitWith {
 	// Reset selection safely (keep type consistent)
 	_vehicle setVariable ["selected_siren", 0, true];
