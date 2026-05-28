@@ -27,13 +27,11 @@ private _brightnessHigh = 20;
 private _attenuation = [];
 private _intensity = 100;
 
-if (sunOrMoon < 0.2) then {
-    // NIGHT
+if (sunOrMoon < 0.2) then {// NIGHT
     _brightnessHigh = 100;
     _attenuation = [0.001,0,50,2500000,0.001,250];
     _intensity = 1000;
-} else {
-    // DAY
+} else {// DAY
     _brightnessHigh = 20;
     _attenuation = [0.001,3000,50,500000,0.001,250];
     _intensity = 100;
