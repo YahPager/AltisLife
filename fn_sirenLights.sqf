@@ -1,27 +1,85 @@
 #include "..\..\script_macros.hpp"
 /*
-    File: fn_sirenLights.sqf
-    Author: Bryan "Tonic" Boardwine
-    Description: Lets play a game! Can you guess what it does? I have faith in you, if you can't
-    then you have failed me and therefor I lose all faith in humanity.. No pressure.
+██████████File: fn_sirenLights.sqf██████████
+███████████████Author: Pager████████████████
+██████████Date Created: 05.28.2026██████████
+███████Date Modified: 05.28.2026 v1.0███████
+*/
+    Improvements:
+    - Cleaner structure
+    - Faster vehicle validation using hash map
+    - Safer variable handling
+    - Prevents duplicate remoteExec calls
+    - Easier to maintain
 */
 params [
-    ["_vehicle",objNull,[objNull]]
+    ["_vehicle", objNull, [objNull]]
 ];
-if (isNull _vehicle) exitWith {}; //Bad entry!
-if !(typeOf _vehicle in ["C_Offroad_01_F","C_Hatchback_01_sport_F","C_SUV_01_F","B_G_Offroad_01_F","B_MRAP_01_F","O_MRAP_02_F","C_Offroad_02_unarmed_F"]) exitWith {}; //Last chance check to prevent something from defying humanity and creating a monster.
 
-private _trueorfalse = _vehicle getVariable ["lights",false];
+if (isNull _vehicle) exitWith {};
 
-if (_trueorfalse) then {
-    _vehicle setVariable ["lights",false,true];
-    if !(isNil {(_vehicle getVariable "lightsJIP")}) then {
-        private _jip = _vehicle getVariable "lightsJIP";
-        _vehicle setVariable ["lightsJIP",nil,true];
-        remoteExec ["",_jip]; //remove from JIP queue
+//==============================================================
+// Allowed vehicles
+//==============================================================
+
+if (isNil "life_allowedLightVehicles") then {
+    life_allowedLightVehicles = createHashMapFromArray [
+        ["C_Offroad_01_F", true],
+        ["C_Hatchback_01_sport_F", true],
+        ["C_SUV_01_F", true],
+        ["B_G_Offroad_01_F", true],
+        ["B_MRAP_01_F", true],
+        ["O_MRAP_02_F", true],
+        ["C_Offroad_02_unarmed_F", true]
+    ];
+};
+
+if !(life_allowedLightVehicles getOrDefault [typeOf _vehicle, false]) exitWith {};
+
+//==============================================================
+// Current state
+//==============================================================
+
+private _lightsEnabled = _vehicle getVariable ["lights", false];
+
+//==============================================================
+// Disable lights
+//==============================================================
+
+if (_lightsEnabled) exitWith {
+
+    _vehicle setVariable ["lights", false, true];
+
+    private _jipId = _vehicle getVariable ["lightsJIP", -1];
+
+    if (_jipId != -1) then {
+
+        // Remove persistent JIP execution
+        remoteExecCall ["", 0, _jipId];
+
+        _vehicle setVariable ["lightsJIP", nil, true];
     };
-} else {
-    _vehicle setVariable ["lights",true,true];
-    private _jip = [_vehicle,0.22] remoteExec ["life_fnc_copLights",RCLIENT,true];
-    _vehicle setVariable ["lightsJIP",_jip,true];
+};
+
+//==============================================================
+// Prevent duplicate execution
+//==============================================================
+
+private _existingJip = _vehicle getVariable ["lightsJIP", -1];
+
+if (_existingJip != -1) exitWith {};
+
+//==============================================================
+// Enable lights
+//==============================================================
+
+private _jipId = [
+    _vehicle,
+    0.22
+] remoteExec ["life_fnc_copLights", RCLIENT, true];
+
+if (!isNil "_jipId") then {
+
+    _vehicle setVariable ["lights", true, true];
+    _vehicle setVariable ["lightsJIP", _jipId, true];
 };
