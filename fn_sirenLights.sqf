@@ -3,8 +3,8 @@
 ██████████File: fn_sirenLights.sqf██████████
 ███████████████Author: Pager████████████████
 ██████████Date Created: 05.28.2026██████████
-███████Date Modified: 05.28.2026 v1.0███████
-*/
+███████Date Modified: 05.28.2026 v1.1███████
+
     Improvements:
     - Cleaner structure
     - Faster vehicle validation using hash map
@@ -18,10 +18,7 @@ params [
 
 if (isNull _vehicle) exitWith {};
 
-//==============================================================
 // Allowed vehicles
-//==============================================================
-
 if (isNil "life_allowedLightVehicles") then {
     life_allowedLightVehicles = createHashMapFromArray [
         ["C_Offroad_01_F", true],
@@ -36,16 +33,10 @@ if (isNil "life_allowedLightVehicles") then {
 
 if !(life_allowedLightVehicles getOrDefault [typeOf _vehicle, false]) exitWith {};
 
-//==============================================================
 // Current state
-//==============================================================
-
 private _lightsEnabled = _vehicle getVariable ["lights", false];
 
-//==============================================================
 // Disable lights
-//==============================================================
-
 if (_lightsEnabled) exitWith {
 
     _vehicle setVariable ["lights", false, true];
@@ -61,18 +52,12 @@ if (_lightsEnabled) exitWith {
     };
 };
 
-//==============================================================
 // Prevent duplicate execution
-//==============================================================
-
 private _existingJip = _vehicle getVariable ["lightsJIP", -1];
 
 if (_existingJip != -1) exitWith {};
 
-//==============================================================
 // Enable lights
-//==============================================================
-
 private _jipId = [
     _vehicle,
     0.22
