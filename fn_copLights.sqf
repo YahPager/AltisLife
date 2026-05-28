@@ -2,30 +2,41 @@
 ███████████File: fn_copLights.sqf███████████
 ████Author: [GSN] Pager & [GSN] Paronity████
 ██████████Date Created: 02.24.2015██████████
-███████Date Modified: 10.02.2022 v4.0███████
+███████Date Modified: 05.27.2026 v5.0███████
 */
 
-if (!hasInterface) exitWith {}; // Doesn't have interface, no lights.
+if (!hasInterface) exitWith {};
 
-private _vehicle = param[0, objNull, [objNull]];
-if (isNil "_vehicle" || {isNull _vehicle || {!(_vehicle getVariable "lights")}}) exitWith {};
-uisleep 1; // Sleep a second to allow syncing, if remoteexec was faster than the variable.
+private _vehicle = param [0, objNull, [objNull]];
 
-private _redLights = [255, 0.1, 0.1];
-private _whiteLights = [255, 255, 255];
-private _blueLights = [0.1, 0.1, 255];
+if (
+    isNull _vehicle ||
+    {!(_vehicle getVariable ["lights", false])}
+) exitWith {};
 
-if (sunOrMoon isEqualTo 1) then
-{ // Night
-	private _brightnessLow = 0;
-	private _brightnessHigh = 20;
-	private _attenuation = [0.001, 3000, 50, 500000, 0.001, 250];
-	private _intensity = 100;
-} else { // Day
-	private _brightnessLow = 0;
-	private _brightnessHigh = 100;
-	private _attenuation = [0.001, 0, 50, 2500000, 0.001, 250];
-	private _intensity = 1000;
+if ((player distance _vehicle) > 500) exitWith {};
+
+uiSleep 1;
+
+private _redLights = [1,0,0];
+private _whiteLights = [1,1,1];
+private _blueLights = [0,0,1];
+
+private _brightnessLow = 0;
+private _brightnessHigh = 20;
+private _attenuation = [];
+private _intensity = 100;
+
+if (sunOrMoon < 0.2) then {
+    // NIGHT
+    _brightnessHigh = 100;
+    _attenuation = [0.001,0,50,2500000,0.001,250];
+    _intensity = 1000;
+} else {
+    // DAY
+    _brightnessHigh = 20;
+    _attenuation = [0.001,3000,50,500000,0.001,250];
+    _intensity = 100;
 };
 
 private _flashes = 3;
@@ -35,36 +46,37 @@ private _flashOff = 0.075;
 private _leftLights = [];
 private _rightLights = [];
 
-private _attach =
-{
-	private _isLight = _this select 0;
-	private _color = _this select 1;
-	private _position = _this select 2;
-	private _lights = "#lightpoint" createVehicleLocal getPos _vehicle;
-	uisleep 0.2;
-	_lights setLightAmbient [0,0,0];
-	_lights setLightBrightness 0;
-	_lights setLightAttenuation _attenuation;
-	_lights setLightIntensity _intensity;
-	_lights setLightFlareSize 1;
-	_lights setLightFlareMaxDistance 150;
-	_lights setLightUseFlare true;
+private _attach = {
+    params ["_isLeft", "_color", "_position"];
 
-	switch (_color) do
-	{
-		case "RED": { _lights setLightColor _redLights; };
-		case "WHITE": { _lights setLightColor _whiteLights; }; // Always headlights except on Pub Cops & Pub Medics White isn't used.
-		case "BLUE": { _lights setLightColor _blueLights; };
-	};
+    private _light = "#lightpoint" createVehicleLocal (getPos _vehicle);
 
-	if (_isLight) then
-	{
-		_leftLights pushBack [_lights, _position];
-	} else {
-		_rightLights pushBack [_lights, _position];
-	};
+    _light setLightAmbient [0,0,0];
+    _light setLightBrightness 0;
+    _light setLightAttenuation _attenuation;
+    _light setLightIntensity _intensity;
 
-	_lights lightAttachObject [_vehicle, _position];
+    switch (_color) do {
+        case "RED": {
+            _light setLightColor _redLights;
+        };
+
+        case "WHITE": {
+            _light setLightColor _whiteLights;
+        };
+
+        case "BLUE": {
+            _light setLightColor _blueLights;
+        };
+    };
+
+    _light lightAttachObject [_vehicle, _position];
+
+    if (_isLeft) then {
+        _leftLights pushBack _light;
+    } else {
+        _rightLights pushBack _light;
+    };
 };
 
 switch (typeOf _vehicle) do
@@ -156,35 +168,47 @@ switch (typeOf _vehicle) do
 	};   
 };
 
-private _lightsOn = true;
-while {(alive _vehicle)} do
-{
-	if (!(_vehicle getVariable "lights")) exitWith {};
-	if (_lightsOn) then
-	{
-		for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
-		{
-			{ (_x select 0) setLightBrightness _brightnessHigh; } forEach _leftLights;
-			uiSleep _flashOn;
-			{ (_x select 0) setLightBrightness _brightnessLow; } forEach _leftLights;
-			uiSleep _flashOff;
-		};
-		{ (_x select 0) setLightBrightness 0; } forEach _leftLights;
+while {
+    alive _vehicle &&
+    {_vehicle getVariable ["lights", false]}
+} do {
+    // LEFT SIDE FLASH
+    for "_i" from 1 to _flashes do {
 
-		for [{_i=0}, {_i<_flashes}, {_i=_i+1}] do
-		{
-			{ (_x select 0) setLightBrightness _brightnessHigh; } forEach _rightLights;
-			uiSleep _flashOn;
-			{ (_x select 0) setLightBrightness _brightnessLow; } forEach _rightLights;
-			uiSleep _flashOff;
-		};
-		{ (_x select 0) setLightBrightness 0; } forEach _rightLights;
-	};
+        {
+            _x setLightBrightness _brightnessHigh;
+        } forEach _leftLights;
+
+        uiSleep _flashOn;
+
+        {
+            _x setLightBrightness _brightnessLow;
+        } forEach _leftLights;
+
+        uiSleep _flashOff;
+    };
+
+    // RIGHT SIDE FLASH
+    for "_i" from 1 to _flashes do {
+
+        {
+            _x setLightBrightness _brightnessHigh;
+        } forEach _rightLights;
+
+        uiSleep _flashOn;
+
+        {
+            _x setLightBrightness _brightnessLow;
+        } forEach _rightLights;
+
+        uiSleep _flashOff;
+    };
 };
 
-{ deleteVehicle (_x select 0) } foreach _leftLights;
-{ deleteVehicle (_x select 0) } foreach _rightLights;
+// CLEANUP
+{
+    deleteVehicle _x;
+} forEach (_leftLights + _rightLights);
 
 _leftLights = [];
 _rightLights = [];
- 
