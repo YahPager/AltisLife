@@ -204,7 +204,6 @@ while {
         uiSleep _flashOff;
     };
 };
-
 // CLEANUP
 {
     deleteVehicle _x;
