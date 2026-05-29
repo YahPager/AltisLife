@@ -2,7 +2,7 @@
 ██████████File: fn_medicLights.sqf██████████
 ████Author: [GSN] Pager & [GSN] Paronity████
 ██████████Date Created: 02.24.2015██████████
-███████Date Modified: 05.28.2026 v6.0███████
+███████Date Modified: 05.28.2026 v6.1███████
 */
 // ============================================================================
 // fn_medicLights.sqf
@@ -154,7 +154,7 @@ switch (typeOf _vehicle) do
         _pattern = "ALTERNATE";
         [
             ["L", COL_RED,    [-0.030,  0.000,  0.200]],
-            ["R", COL_YELLOW, [-0.030,  0.000,  0.200]],
+            ["R", COL_YELLOW, [ 0.030,  0.000,  0.200]],
             ["L", COL_RED,    [-0.800, -2.250, -0.300]],
             ["R", COL_YELLOW, [ 0.780, -2.250, -0.300]],
             ["R", COL_WHITE,  [ 0.750,  1.615, -0.520]],
@@ -168,7 +168,7 @@ switch (typeOf _vehicle) do
         _pattern = "ALTERNATE";
         [
             ["L", COL_RED,    [-0.030,  0.000,  0.200]],
-            ["R", COL_YELLOW, [-0.030,  0.000,  0.200]],
+            ["R", COL_YELLOW, [ 0.030,  0.000,  0.200]],
             ["L", COL_RED,    [-0.800, -2.250, -0.300]],
             ["R", COL_YELLOW, [ 0.780, -2.250, -0.300]],
             ["R", COL_WHITE,  [ 0.750,  1.615, -0.520]],
@@ -211,7 +211,6 @@ switch (typeOf _vehicle) do
             // Rear
             ["R", COL_YELLOW, [ 0.000, -3.000,  0.025]],
             ["L", COL_RED,    [-0.725, -3.100,  0.025]],
-            ["L", COL_RED,    [ 0.725, -3.100,  0.025]],
             // Side whites
             ["L", COL_WHITE,  [ 1.050,  2.250, -0.300]],
             ["R", COL_WHITE,  [-1.050,  2.250, -0.300]]
@@ -227,7 +226,7 @@ switch (typeOf _vehicle) do
             ["R", COL_YELLOW, [ 1.175, -1.500,  0.3650]],
             ["L", COL_RED,    [-1.175, -1.500,  0.3650]],
             // Roof rear
-            ["L", COL_RED,    [ 0.4325,-1.500,  0.6275]],
+            ["L", COL_RED,    [-0.4325,-1.500,  0.6275]],
             ["R", COL_YELLOW, [ 0.4325,-1.500,  0.6275]],
             // Front low
             ["L", COL_RED,    [-0.200,  1.575, -1.1250]],
