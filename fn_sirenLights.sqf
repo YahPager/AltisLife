@@ -40,7 +40,6 @@ if (_vehicle getVariable ["lightsBusy", false]) exitWith {};
 
 _vehicle setVariable ["lightsBusy", true, true];
 
-
 // --- Helper: disable lights and cancel JIP ---
 private _disableLights = {
 
@@ -57,7 +56,6 @@ private _disableLights = {
     _vehicle setVariable ["lightsJIP", nil, true];
 
 };
-
 
 // --- Toggle ---
 private _lightsEnabled = _vehicle getVariable ["lights", false];
@@ -76,7 +74,6 @@ if (_lightsEnabled) then {
         // remoteExec failed — don't claim lights are on
 
         diag_log format ["[CopLights] remoteExec failed for %1", typeOf _vehicle];
-
     };
 };
 
