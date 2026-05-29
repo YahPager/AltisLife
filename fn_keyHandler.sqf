@@ -3,28 +3,33 @@
     case 38: { // L key
     private _veh = vehicle player;
 
-    if (_shift && (playerSide isEqualTo west || playerSide isEqualTo independent)) then {
-        if (_veh != player && (typeOf _veh) in [
-            "C_Offroad_01_F",
-            "C_Hatchback_01_sport_F",
-            "C_SUV_01_F",
-            "B_G_Offroad_01_F",
-            "B_MRAP_01_F",
-            "O_MRAP_02_F",
-            "C_Offroad_02_unarmed_F"
-        ]) then {
-            if (!isNil {_veh getVariable "lights"}) then {
-                if (playerSide isEqualTo west) then {
-                    [_veh] call life_fnc_sirenLights;
-                } else {
-                    [_veh] call life_fnc_medicSirenLights;
-                };
-                _handled = true;
-            };
+    // Whitelisted emergency vehicles
+    private _emergencyVehicles = [
+        "C_Offroad_01_F",
+        "C_Hatchback_01_sport_F",
+        "C_SUV_01_F",
+        "B_G_Offroad_01_F",
+        "B_MRAP_01_F",
+        "O_MRAP_02_F",
+        "C_Offroad_02_unarmed_F"
+    ];
+
+    private _isEmergencySide = playerSide isEqualTo west || playerSide isEqualTo independent;
+    private _isInVehicle     = _veh != player;
+    private _isValidVehicle  = (typeOf _veh) in _emergencyVehicles;
+    private _hasLights       = !isNil { _veh getVariable "lights" };
+
+    // Shift+L — Toggle siren lights (emergency sides only)
+    if (_shift && _isEmergencySide && _isInVehicle && _isValidVehicle && _hasLights) then {
+        switch (true) do {
+            case (playerSide isEqualTo west):        { [_veh] call life_fnc_sirenLights;       };
+            case (playerSide isEqualTo independent): { [_veh] call life_fnc_medicSirenLights;  };
         };
+        _handled = true;
     };
 
-    if (!_alt && !_ctrlKey) then {
+    // L alone — Open radar (no modifier keys)
+    if (!_handled && !_alt && !_ctrlKey && !_shift) then {
         [] call life_fnc_radar;
     };
 };
