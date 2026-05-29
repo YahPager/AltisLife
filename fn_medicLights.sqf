@@ -154,7 +154,7 @@ switch (typeOf _vehicle) do
         _pattern = "ALTERNATE";
         [
             ["L", COL_RED,    [-0.030,  0.000,  0.200]],
-            ["R", COL_YELLOW, [ 0.030,  0.000,  0.200]],
+            ["R", COL_YELLOW, [-0.030,  0.000,  0.200]],
             ["L", COL_RED,    [-0.800, -2.250, -0.300]],
             ["R", COL_YELLOW, [ 0.780, -2.250, -0.300]],
             ["R", COL_WHITE,  [ 0.750,  1.615, -0.520]],
@@ -168,7 +168,7 @@ switch (typeOf _vehicle) do
         _pattern = "ALTERNATE";
         [
             ["L", COL_RED,    [-0.030,  0.000,  0.200]],
-            ["R", COL_YELLOW, [ 0.030,  0.000,  0.200]],
+            ["R", COL_YELLOW, [-0.030,  0.000,  0.200]],
             ["L", COL_RED,    [-0.800, -2.250, -0.300]],
             ["R", COL_YELLOW, [ 0.780, -2.250, -0.300]],
             ["R", COL_WHITE,  [ 0.750,  1.615, -0.520]],
