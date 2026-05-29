@@ -2,7 +2,7 @@
 ███████File: fn_medicSirenLights.sqf████████
 ███████████████Author: Pager████████████████
 ██████████Date Created: 05.28.2026██████████
-███████Date Modified: 05.28.2026 v1.0███████
+███████Date Modified: 05.28.2026 v1.1███████
 */
 // ============================================================================
 // fn_medicSirenLights.sqf
@@ -221,7 +221,6 @@ switch (typeOf _vehicle) do
             ["L", COL_RED,    [-0.900,  2.200, -0.800]],
             ["R", COL_YELLOW, [ 0.000, -3.000,  0.025]],
             ["L", COL_RED,    [-0.725, -3.100,  0.025]],
-            ["L", COL_RED,    [ 0.725, -3.100,  0.025]],
             // Grille — front lower corners
             ["L", COL_RED,    [-0.800,  2.600, -0.900]],
             ["R", COL_YELLOW, [ 0.800,  2.600, -0.900]]
