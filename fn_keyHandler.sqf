@@ -1,5 +1,4 @@
-    // Add this in the fn_keyHandler.sqf There should already be code simular to this in there. Just copy and paste over it.
-    /*
+ /*
     case 38: { // L key
     private _veh = vehicle player;
 
@@ -35,15 +34,11 @@
 };
 */
 
-#include "..\..\script_macros.hpp"
 /*
-    File: fn_keyHandler.sqf
-    Author: Bryan "Tonic" Boardwine
-    Revised: Extended & hardened
-
-    Description:
-    Main key handler for the keyDown event. Handles all player
-    interactions, vehicle controls, UI toggles, and side-specific actions.
+██████████File: fn_keyHandler.sqf███████████
+███████████████Author: Pager████████████████
+██████████Date Created: 05.28.2026██████████
+███████Date Modified: 05.28.2026 v2.0███████
 */
 
 // ── Parameter unpacking ───────────────────────────────────────────────────────
@@ -423,7 +418,6 @@ switch (_code) do {
             };
         };
     };
-
 };
 
 _handled
