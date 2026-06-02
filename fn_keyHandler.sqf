@@ -118,7 +118,7 @@ switch (_code) do {
     // ── [MAP KEY] Open map + side markers ────────────────────────────────────
     case _mapKey: {
         switch (playerSide) do {
-            case west:        { if (!visibleMap) then { [] spawn life_fnc_copMarkers;    } };
+            case west:        { if (!visibleMap) then { [] spawn life_fnc_copMarkers;   } };
             case independent: { if (!visibleMap) then { [] spawn life_fnc_medicMarkers; } };
         };
     };
