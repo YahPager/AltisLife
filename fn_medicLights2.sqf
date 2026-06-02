@@ -11,12 +11,6 @@
 // Usage:  [vehicle] call fn_medicSirenLights;
 //
 // Trigger condition: "lights" vehicle variables must be true.
-//
-// Flash pattern: "WIGWAG_HOLD"
-//   — left side bursts, right side bursts, then both sides hold ON briefly.
-//   Covers two light groups per vehicle:
-//     • Primary  — same positions as fn_medicLights (brighter, faster)
-//     • Grille   — extra low-mount grille / dash lights
 // ============================================================================
 
 if (!hasInterface) exitWith {};
@@ -44,6 +38,10 @@ uiSleep 1;
 #define COL_RED    [1, 0, 0]
 #define COL_WHITE  [1, 1, 1]
 #define COL_YELLOW [1, 1, 0]
+
+// ── How many cycles each pattern runs before switching ────────────────────────
+
+#define PATTERN_CYCLES 6
 
 // ── Day / night brightness ────────────────────────────────────────────────────
 
@@ -231,12 +229,34 @@ private _fnBurst = {
     };
 };
 
+// Pattern 0 — Wigwag Hold (original): left burst, right burst, all hold dim
 private _fnWigwagHold = {
     [_leftLights]  call _fnBurst;
     [_rightLights] call _fnBurst;
     { _x setLightBrightness _brightnessHold; } forEach (_leftLights + _rightLights);
     uiSleep HOLD_DURATION;
     { _x setLightBrightness 0;               } forEach (_leftLights + _rightLights);
+};
+
+// Pattern 1 — Alternating: classic left/right trade-off, no burst
+private _fnAlternating = {
+    { _x setLightBrightness _brightnessHigh; } forEach _leftLights;
+    { _x setLightBrightness 0;               } forEach _rightLights;
+    uiSleep HOLD_DURATION;
+    { _x setLightBrightness 0;               } forEach _leftLights;
+    { _x setLightBrightness _brightnessHigh; } forEach _rightLights;
+    uiSleep HOLD_DURATION;
+    { _x setLightBrightness 0;               } forEach _rightLights;
+};
+
+// Pattern 2 — Strobe: all lights rapid fire
+private _fnStrobe = {
+    for "_i" from 1 to 6 do {
+        { _x setLightBrightness _brightnessHigh; } forEach (_leftLights + _rightLights);
+        uiSleep 0.02;
+        { _x setLightBrightness 0;               } forEach (_leftLights + _rightLights);
+        uiSleep 0.02;
+    };
 };
 
 // ── Active-check closure ──────────────────────────────────────────────────────
@@ -247,18 +267,31 @@ private _fnIsActive = {
     !isNil "_lv" && { _lv }
 };
 
-// ── Main flash loop ───────────────────────────────────────────────────────────
+// ── Main flash loop — cycles through all three patterns ───────────────────────
+
+private _phase        = 0;
+private _cycleCounter = 0;
 
 while { call _fnIsActive } do {
-    call _fnWigwagHold;
+
+    switch (_phase) do {
+        case 0: { call _fnWigwagHold;  };
+        case 1: { call _fnAlternating; };
+        case 2: { call _fnStrobe;      };
+    };
+
     if (CYCLE_PAUSE > 0) then { uiSleep CYCLE_PAUSE; };
+
+    // Advance pattern after PATTERN_CYCLES repetitions
+    _cycleCounter = _cycleCounter + 1;
+    if (_cycleCounter >= PATTERN_CYCLES) then {
+        _cycleCounter = 0;
+        _phase = (_phase + 1) % 3;
+    };
 };
 
 // ── Cleanup ───────────────────────────────────────────────────────────────────
 
-{ deleteVehicle _x; } forEach (_leftLights + _rightLights);
-_leftLights  = [];
-_rightLights = [];───────────────────────────
 { deleteVehicle _x; } forEach (_leftLights + _rightLights);
 _leftLights  = [];
 _rightLights = [];
