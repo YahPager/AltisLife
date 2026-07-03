@@ -2,16 +2,8 @@
 █████████File: fn_medicLights2.sqf██████████
 ███████████████Author: Pager████████████████
 ██████████Date Created: 05.28.2026██████████
-███████Date Modified: 05.28.2026 v2.0███████
+███████Date Modified: 07.02.2026 v3.0███████
 */
-// ============================================================================
-// fn_medicLights2.sqf
-// Attaches and animates lights on supported medic vehicles.
-//
-// Usage:  [vehicle] call fn_medicSirenLights;
-//
-// Trigger condition: "lights" vehicle variables must be true.
-// ============================================================================
 
 if (!hasInterface) exitWith {};
 
@@ -259,6 +251,23 @@ private _fnStrobe = {
     };
 };
 
+// Pattern 3 — Quad Flash: four quick flashes per side, left then right
+private _fnQuadFlash = {
+    for "_i" from 1 to 4 do {
+        { _x setLightBrightness _brightnessHigh; } forEach _leftLights;
+        uiSleep 0.03;
+        { _x setLightBrightness 0;               } forEach _leftLights;
+        uiSleep 0.03;
+    };
+    uiSleep 0.1;
+    for "_i" from 1 to 4 do {
+        { _x setLightBrightness _brightnessHigh; } forEach _rightLights;
+        uiSleep 0.03;
+        { _x setLightBrightness 0;               } forEach _rightLights;
+        uiSleep 0.03;
+    };
+};
+
 // ── Active-check closure ──────────────────────────────────────────────────────
 
 private _fnIsActive = {
@@ -267,7 +276,7 @@ private _fnIsActive = {
     !isNil "_lv" && { _lv }
 };
 
-// ── Main flash loop — cycles through all three patterns ───────────────────────
+// ── Main flash loop — cycles through all four patterns ────────────────────────
 
 private _phase        = 0;
 private _cycleCounter = 0;
@@ -278,6 +287,7 @@ while { call _fnIsActive } do {
         case 0: { call _fnWigwagHold;  };
         case 1: { call _fnAlternating; };
         case 2: { call _fnStrobe;      };
+        case 3: { call _fnQuadFlash;   };
     };
 
     if (CYCLE_PAUSE > 0) then { uiSleep CYCLE_PAUSE; };
@@ -286,7 +296,7 @@ while { call _fnIsActive } do {
     _cycleCounter = _cycleCounter + 1;
     if (_cycleCounter >= PATTERN_CYCLES) then {
         _cycleCounter = 0;
-        _phase = (_phase + 1) % 3;
+        _phase = (_phase + 1) % 4;
     };
 };
 
